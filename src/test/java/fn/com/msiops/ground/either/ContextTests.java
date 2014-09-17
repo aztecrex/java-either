@@ -12,17 +12,12 @@ import com.msiops.ground.either.FunctionX;
 public class ContextTests {
 
     @Test
-    public void testCheckedConvergentLift() {
+    public void testLiftL0CheckedConvergent() {
 
         final FunctionX<Integer, ?, ?> f = x -> x * x;
 
-        final Function<Integer, ?> lf = Either.liftChecked(f);
+        final Function<Integer, ?> lf = Either.liftL0Checked(f);
 
-        /*
-         * notice that we only need to catch an exception because we are
-         * invoking the fn here. This points out the purpose of the checked
-         * lift--no exception handler or throws clause is needed.
-         */
         final Object r;
         try {
             r = f.apply(10);
@@ -35,7 +30,7 @@ public class ContextTests {
     }
 
     @Test
-    public void testCheckedDivergentLift() {
+    public void testLiftL0CheckedDivergent() {
 
         final Exception rightx = new Exception("timmy's down a well!");
 
@@ -43,25 +38,25 @@ public class ContextTests {
             throw rightx;
         };
 
-        final Function<Object, ?> lf = Either.liftChecked(f);
+        final Function<Object, ?> lf = Either.liftL0Checked(f);
 
         assertEquals(Either.right(rightx), lf.apply(10));
 
     }
 
     @Test
-    public void testUncheckedConvergentLift() {
+    public void testLiftL0Convergent() {
 
         final Function<Integer, ?> f = x -> x * x;
 
-        final Function<Integer, ?> lf = Either.lift(f);
+        final Function<Integer, ?> lf = Either.liftL0(f);
 
         assertEquals(Either.left(f.apply(10)), lf.apply(10));
 
     }
 
     @Test
-    public void testUncheckedDivergentLift() {
+    public void testLiftL0Divergent() {
 
         final RuntimeException rightx = new RuntimeException(
                 "Red Lectroids from planet 10 by way of the 8th dimension!");
@@ -70,7 +65,7 @@ public class ContextTests {
             throw rightx;
         };
 
-        final Function<Object, ?> lf = Either.lift(f);
+        final Function<Object, ?> lf = Either.liftL0(f);
 
         assertEquals(Either.right(rightx), lf.apply(10));
 

@@ -101,7 +101,7 @@ public final class Either<Left, Right> {
      *
      * @return lifted function.
      */
-    public static <T, R> Function<T, Either<R, RuntimeException>> lift(
+    public static <T, R> Function<T, Either<R, RuntimeException>> liftL0(
             final Function<T, R> f) {
 
         return t -> {
@@ -139,7 +139,7 @@ public final class Either<Left, Right> {
      *
      * @return lifted function.
      */
-    public static <T, R> Function<T, Either<R, Exception>> liftChecked(
+    public static <T, R> Function<T, Either<R, Exception>> liftL0Checked(
             final FunctionX<T, R, ?> f) {
         return t -> {
             try {
