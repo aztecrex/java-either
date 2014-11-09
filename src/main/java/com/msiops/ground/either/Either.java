@@ -76,6 +76,27 @@ public final class Either<Left, Right> {
 
     }
 
+    public static <T, R> Function<Either<T, RuntimeException>, Either<R, RuntimeException>> lift(
+            final Function<? super T, R> f) {
+
+        return mt -> mt.flatMap(liftL0(f));
+
+    }
+
+    public static <T, R> Function<Either<T, Exception>, Either<R, Exception>> lift(
+            final FunctionX<? super T, R, ?> f) {
+
+        return mt -> mt.flatMap(liftXL0(f));
+
+    }
+
+    public static <T, R, X extends Exception> Function<Either<T, X>, Either<R, X>> lift(
+            final FunctionX<? super T, R, X> f, final Class<X> xtype) {
+
+        return mt -> mt.flatMap(liftXL0(f, xtype));
+
+    }
+
     /**
      * <p>
      * Lift an unchecked function. The resulting function maps to {@link Either}
@@ -139,15 +160,29 @@ public final class Either<Left, Right> {
      *
      * @return lifted function.
      */
-    public static <T, R> Function<T, Either<R, Exception>> liftL0Checked(
-            final FunctionX<T, R, ?> f) {
+    public static <T, R, X extends Exception> Function<T, Either<R, X>> liftXL0(
+            final FunctionX<? super T, R, ? extends X> f, final Class<X> xtype) {
+
         return t -> {
             try {
                 return new Either<>(f.apply(t), null);
             } catch (final Exception x) {
-                return new Either<>(null, x);
+                if (xtype.isInstance(x)) {
+                    // whatever the fn's X is. might be a RuntimeException
+                    return right(xtype.cast(x));
+                } else {
+                    // must be a runtime
+                    throw (RuntimeException) x;
+                }
             }
         };
+
+    }
+
+    public static <T, R> Function<T, Either<R, Exception>> liftXL0(
+            final FunctionX<? super T, R, ?> f) {
+
+        return liftXL0(f, Exception.class);
 
     }
 

@@ -12,11 +12,11 @@ import com.msiops.ground.either.FunctionX;
 public class ContextTests {
 
     @Test
-    public void testLiftL0CheckedConvergent() {
+    public void testLiftXL0Convergent() {
 
         final FunctionX<Integer, ?, ?> f = x -> x * x;
 
-        final Function<Integer, ?> lf = Either.liftL0Checked(f);
+        final Function<Integer, ?> lf = Either.liftXL0(f);
 
         final Object r;
         try {
@@ -30,7 +30,7 @@ public class ContextTests {
     }
 
     @Test
-    public void testLiftL0CheckedDivergent() {
+    public void testLiftXL0Divergent() {
 
         final Exception rightx = new Exception("timmy's down a well!");
 
@@ -38,7 +38,7 @@ public class ContextTests {
             throw rightx;
         };
 
-        final Function<Object, ?> lf = Either.liftL0Checked(f);
+        final Function<Object, ?> lf = Either.liftXL0(f);
 
         assertEquals(Either.right(rightx), lf.apply(10));
 

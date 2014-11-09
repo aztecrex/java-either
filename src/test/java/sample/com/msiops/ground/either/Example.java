@@ -234,6 +234,15 @@ public enum Example implements Runnable {
             // supplied exception
 
         }
+    },
+    
+    LIFT0 {
+        @Override
+        public void run() {
+            
+            assert false;
+            
+        }
     }
 
 }
